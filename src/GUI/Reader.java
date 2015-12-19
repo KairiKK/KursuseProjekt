@@ -69,7 +69,7 @@ public class Reader extends Application {
         Button btn3 = new Button("Eralda");
        // btn1.setFont(Font.font("Harlow Solid Italic", FontWeight.BOLD, 12));
         CheckBox chk1 = new CheckBox("Teavita");
-        CheckBox chk2 = new CheckBox("---");
+        CheckBox chk2 = new CheckBox("R");
         FlowPane feed = new FlowPane();
         feed.setVgap(8);
         feed.setHgap(4);
