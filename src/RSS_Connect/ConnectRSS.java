@@ -29,15 +29,15 @@ public class ConnectRSS {
             }
         }
 
-    public Elements getTitle() {
+    private Elements getTitle() {
         return title;
     }
 
-    public Elements getLink() {
+    private Elements getLink() {
         return link;
     }
 
-    public Elements getDescription() {
+    private Elements getDescription() {
         return description;
     }
 }
