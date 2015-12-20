@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -24,16 +25,6 @@ import java.io.File;
  */
 public class Reader extends Application {
 
-/* static ObservableList toonid = // menyy
-            FXCollections.observableArrayList();
-    toonid.addAll(
-            "kollane, roosa, sinine, must"
-            );
-    list.setPrefWidth(100);
-    list.setPrefHeight(70);
-
-
-   */
 
     public static void main(String[] args) {
         launch(args);
@@ -70,10 +61,9 @@ public class Reader extends Application {
        // btn1.setFont(Font.font("Harlow Solid Italic", FontWeight.BOLD, 12));
         CheckBox chk1 = new CheckBox("Teavita");
         CheckBox chk2 = new CheckBox("R");
-        FlowPane feed = new FlowPane();
-        feed.setVgap(8);
-        feed.setHgap(4);
-        feed.setPrefWrapLength(100);
+        StackPane feed = new StackPane();
+        feed.setAlignment(Pos.TOP_RIGHT);
+        feed.setPrefSize(100, 100);
 
         ToolBar toolBar1 = new ToolBar();
         toolBar1.getItems().addAll(
@@ -90,17 +80,17 @@ public class Reader extends Application {
         final BorderPane pane = new BorderPane();
 
         pane.setTop(toolBar1);
-        pane.setLeft(valik);
+        pane.setRight(valik);
+        pane.setLeft(feed);
 
-        pane.setRight(feed);
         final Scene scene = new Scene(pane, 600, 400);
         pane.setStyle("-fx-background-color: rgb(56, 64, 90)");
-        toolBar1.setStyle("-fx-background-color: rgb(120, 122, 160)");
+        toolBar1.setStyle("-fx-background-color: rgb(255, 255, 255)");
         //btn1.setFont(Font.font("Harlow Solid Italic", FontWeight.BOLD, 12));
        // scene.setFill(Color.WHITE);
 
         valik.setPrefSize(200, 25);
-        valik.setStyle("-fx-background-color: rgb(56, 64, 90)");
+        valik.setStyle("-fx-background-color: rgb(255, 255, 255)");
         primaryStage.setScene(scene);
         primaryStage.setTitle("Fiider");
         primaryStage.show();
@@ -118,6 +108,16 @@ public class Reader extends Application {
        // private Color textcolor = new Color(255, 255, 255);
 
 
+/* static ObservableList toonid = // menyy
+            FXCollections.observableArrayList();
+    toonid.addAll(
+            "kollane, roosa, sinine, must"
+            );
+    list.setPrefWidth(100);
+    list.setPrefHeight(70);
+
+
+   */
 
 
 /*
