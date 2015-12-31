@@ -13,6 +13,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -24,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -47,12 +49,28 @@ public class Reader extends Application {
         Button button1 = new Button("Juhis");
         button1.setOnAction(e -> window.setScene(scene2));
 
+
         //Checkbox - actions to add
         CheckBox chk1 = new CheckBox("Teavita");
         CheckBox chk2 = new CheckBox("R");
 
-       // Button add feed - action to add (Dialogbox, JavaFX8 peaks toetama)
-        Button addfeed = new Button("+");                   //addfeed.setOnAction(event -> popuppeakstulemasiia);
+        // Button add feed - action to add (Dialogbox, JavaFX8 peaks toetama)
+        Button addNewFeed = new Button("+");
+
+        //TextInputDialog testija = null;
+        //addNewFeed.setOnAction(event -> testija);
+        TextInputDialog testija = new TextInputDialog("Sisesta aadress");
+        testija.setTitle("Sisestus");
+        testija.setHeaderText("Look, a Text Input Dialog");
+        testija.setContentText("Please enter your name:");
+        //testija.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));
+
+        Optional<String> result = testija.showAndWait();
+        if (result.isPresent()) {
+            System.out.println("Seda peaks nüüd salvestama ARRAYSSE tegelikult: " + result.get());
+        }
+
+
 
         //Choicebox
         ChoiceBox choosefeed = new ChoiceBox(FXCollections.observableArrayList(
@@ -68,8 +86,8 @@ public class Reader extends Application {
                 chk1,
                 chk2,
                 new Separator(),
-                addfeed,
-                choosefeed
+                choosefeed,
+                addNewFeed
 
         );
 
@@ -82,17 +100,13 @@ public class Reader extends Application {
 
         // method that adds buttons and things alltoghther to borderpane
         BorderPane borderpane = new BorderPane();
-            borderpane.setTop(toolBar1);
-            borderpane.setRight(rect);
+        borderpane.setTop(toolBar1);
+        borderpane.setRight(rect);
 
         scene1 = new Scene(borderpane, 600, 400);
 
 
         //"FEEDWINDOW" CENTER, at least 3 different sections
-
-
-
-
 
 
         //SCENE 2
@@ -107,7 +121,7 @@ public class Reader extends Application {
         label.setFont(new Font("Harlow Solid Italic", 24));//font
 
         // tules teha ümber selliseks http://stackoverflow.com/questions/16828341/how-to-justify-text-for-a-character-array-in-java
-        Text text = new Text("SIIA TULEB PALJU TEKSTi" +  "\n" + "\n" +
+        Text text = new Text("SIIA TULEB PALJU TEKSTi" + "\n" + "\n" +
                 "RSS (Rich Site Summary; originally RDF Site Summary; often called Really Simple Syndication) uses" +
                 "a family of standard web feed formats[2] to publish frequently updated information: blog entries, " +
                 "news headlines, audio, video. An RSS document (called \"feed\", \"web feed\",[3] or \"channel\") " +
@@ -127,10 +141,9 @@ public class Reader extends Application {
                 " is enabled. The reader also provides a user interface.");
 
         VBox vboxjuhis = new VBox();
-        vboxjuhis.getChildren().addAll(label, text,button2);
+        vboxjuhis.getChildren().addAll(label, text, button2);
 
         scene2 = new Scene(vboxjuhis, 300, 300);
-
 
 
         //KUVAMINE
