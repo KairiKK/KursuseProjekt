@@ -1,12 +1,10 @@
 package RSS_Connect;
 
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -17,22 +15,22 @@ import java.util.ArrayList;
  */
 public class ConnectRSS {
 
-    private Document doc;
-    private Elements items, title, link, description;
-    private ArrayList titleString = new ArrayList();
-    private ArrayList<ArrayList<String>> newsItem = new ArrayList<ArrayList<String>>();
+    public Document doc;
+    public Elements item, title, link, description;
+    public ArrayList titleString = new ArrayList();
+    public ArrayList<ArrayList<String>> newsItem = new ArrayList<ArrayList<String>>();
 
 
-    public ConnectRSS(String feed) {
+    public ConnectRSS(String testija) {
 
         try {
 
-            Document doc = Jsoup.connect(feed).get(); // By the help of Jsoup.connect() method, we will connect with the URL.
-            items = doc.select("item");
-            System.out.println("[+] Connected to " + feed);
+            Document doc = Jsoup.connect(testija).get(); // By the help of Jsoup.connect() method, we will connect with the URL.
+            item = doc.select("item");
+            System.out.println("[+] Connected to " + testija);
 
 
-            for (Element element : items) {
+            for (Element element : item) {
 
 
                 ArrayList<String> buffer = new ArrayList<String>();
@@ -54,15 +52,15 @@ public class ConnectRSS {
     }
 
 
-    public boolean testConnection(String feed) {
+    public boolean testConnection(String testija) {
 
         try {
-            doc = Jsoup.connect(feed).get();
+            doc = Jsoup.connect(testija).get();
         } catch (Exception e) {
-            System.out.println("Boooo " + feed + " failed.");
+            System.out.println("Boooo " + testija + " failed.");
             return false;
         }
-        System.out.println("Wooop " + feed + " successful");
+        System.out.println("Wooop " + testija + " successful");
         return true;
     }
 
@@ -72,11 +70,12 @@ public class ConnectRSS {
     }
 }
 
-class feed {
+class testija {
 
     String title;
     String description;
     String link;
+    String pubdate;
 
     public String getTitle() {
         return title;
@@ -102,10 +101,13 @@ class feed {
         this.link = link;
     }
 
+    public String getPubdate() { return pubdate; }
+
+    public void setPubdate(String pubdate) {this.pubdate = pubdate;}
 
     @Override
     public String toString() {
-        return "feed [title=" + title + ", description=" + description
+        return "testija [title=" + title + ", description=" + description
                 + ", link=" + link + "]";
     }
 

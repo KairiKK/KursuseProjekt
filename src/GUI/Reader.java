@@ -1,5 +1,6 @@
 package GUI;
 
+import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -8,6 +9,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -18,11 +20,17 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import javax.activation.URLDataSource;
+import javax.print.DocFlavor;
 import java.applet.Applet;
 import java.applet.AudioClip;
+import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.util.Optional;
 
+import static com.sun.org.apache.bcel.internal.util.SecuritySupport.getResourceAsStream;
 import static javafx.scene.paint.Color.*;
 
 /**
@@ -31,7 +39,7 @@ import static javafx.scene.paint.Color.*;
 public class Reader extends Application {
     Stage window;
     Scene scene1, scene2;
-    private EventHandler<ActionEvent> actionEventEventHandler;
+
 
     public static void main(String[] args) {
         launch(args);
@@ -41,6 +49,7 @@ public class Reader extends Application {
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
 
+
         //TOOLBAR on top
 
         //Button 1
@@ -48,65 +57,101 @@ public class Reader extends Application {
         button1.setOnAction(e -> window.setScene(scene2));
 
 
-        //Checkbox - actions to add
+        //Checkboxes - actions to add
         CheckBox chk1 = new CheckBox("Intro");
         URL url = MyApp.class.getResource("Hail_And_Kill.wav");
         AudioClip click = Applet.newAudioClip(url);
         chk1.setOnAction(event1 -> click.play());
 
-
-
         CheckBox chk2 = new CheckBox("A");
 
-        // Button add feed - action to add (Dialogbox, JavaFX8 peaks toetama)
+
+        // Button addNewfeed calls Dialogbox // Siit sai võetud malli: http://stackoverflow.com/questions/22166610/how-to-create-a-popup-windows-in-javafx
+
         Button addNewFeed = new Button("+");
-
-
-        //TextInputDialog testija = null;
-        /*actionEventEventHandler = e -> addNewFeed;
-        addNewFeed.setOnAction(actionEventEventHandler
-                (new EventHandler<ActionEvent>() {
-                    @Override public void handle(ActionEvent e) {
-                        System.out.println("Reader.handle");
-                    }
-                });
-*/
-        TextInputDialog testija = new TextInputDialog("Sisesta aadress");
+        TextInputDialog testija = new TextInputDialog();
         testija.setTitle("Feedi Sisestus");
-        testija.setHeaderText( " Kas soovite sisestada aadressi? \n " +
+        testija.setHeaderText(" Kas soovite sisestada aadressi? \n " +
                 "Sisestage lahtrisse aadress, mida soovite jälgima hakata ja vajutage OK");
-        testija.setGraphic(new ImageView(this.getClass().getResource("Hand_drawn.png").toString()));
-
-
-        // Siit sai võetud malli: http://stackoverflow.com/questions/22166610/how-to-create-a-popup-windows-in-javafx
-
+        testija.setGraphic(new ImageView(this.getClass().getResource("mybutton.jpg").toString()));
+        testija.setResizable(false);
         addNewFeed.setOnAction(event -> testija.showAndWait());
 
-        //https://www.iconfinder.com/iconsets/hand-drawn-icons litsentseeritud peab checkima
 
-        /*ButtonType buttonTypeOK = new ButtonType("OK");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-
-
+        //Dialogbox response
         //Järgnev ei tööta
 
-        testija.getButtonType().setAll(buttonTypeOK, buttonTypeCancel);
+      /*  ButtonType buttonTypeCancel(); = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonType buttonTypeOK = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
 
-       /Optional<ButtonType> result = testija.showAndWait();
-        if (result.get() == buttonTypeOK){
-            // ... Seda peaks nüüd salvestama ARRAYLISTI tegelikult: " + result.get());
-        } else if (result.get() == buttonTypeCancel) {
-            // ... kui valida Cancel ei juhtu midagi ja aken sulgub
-        } else {
-            //
+       // SEE NÄITAB ESIMESENA DIALOGBOXI ja prindib
+        Optional<String> result = isEmpty();
+        if (result.isPresent()){
+            System.out.println(result.get());
         }
+        */
+        
+
+        
+        //meetod, et saada input - KÕIK NUPUD TULEKS ERALDI MEETODITEKS LÕHKUDA !!
+
+        /*
+        Optional<Object> result;
+       // testija.showAndWait().ifPresent(response -> {
+            if (result.isPresent() &&  response == ButtonType.OK) {
+                System.out.println("sisu: " + result.get());
+            }
+        });
+
+    Optional<TextInputDialog> result = testija.showAndWait();
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+        formatSystem();
+    }
+        /*String kasutajaInputUrl = testija.getResult();
+                System.out.println(kasutajaInputUrl); */
+
+
+     /* /if (result.isPresent()) {
+            System.out.println("Your name: " + result.get());
+        } else {
+            System.out.println("VIGA");
+        }*/
+
+
+
+        /*class Handler extends URLStreamHandler {
+            public ClassLoader classLoader;
+
+            public Handler() {
+                Optional<String> result = testija.showAndWait();
+                this.classLoader = getClass().getClassLoader();
+            }
+
+            @Override
+            protected URLConnection openConnection(URL u) throws IOException {
+                URL resourceUrl;
+                resourceUrl = classLoader.getResource(u.getPath());
+                if (resourceUrl == null)
+                    throw new IOException("Resource not found: " + u);
+
+                return resourceUrl.openConnection();
+            }
+        }
+
+        */
+        /*ButtonType buttonTypeOK = new ButtonType("OK");
+        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
         */
 
 
+        ComboBox chooseFeed = new ComboBox();
 
-        //Choicebox
-        ChoiceBox choosefeed = new ChoiceBox(FXCollections.observableArrayList(
-                "Kanal 1", "Kanal 2", "Kanal 3"));
+        //Choicebox variant 1
+        /* ChoiceBox choosefeed = new ChoiceBox (FXCollections.observableArrayList(
+                "Kanal 1", "Kanal 2", "Kanal 3")); */
+
+        /*ChoiceBox <String>choosefeed = new ChoiceBox <>();
+        choosefeed.getItems().addAll();*/
 
         //Toolbar
         ToolBar toolBar1 = new ToolBar();
@@ -118,18 +163,16 @@ public class Reader extends Application {
                 chk1,
                 chk2,
                 new Separator(),
-                choosefeed,
+                //choosefeed,
                 addNewFeed
 
         );
 
-        choosefeed.getSelectionModel()
+      /*  choosefeed.getSelectionModel()
                 .selectedItemProperty()
                 .addListener(
                         (ObservableValue observable, Object oldValue, Object newValue) -> {
-                            System.out.println(newValue);
-
-                        });
+                            System.out.println(newValue); }); */
 
         //toolBar1.setStyle(Color.CORAL));
         /*toolBar1.setStyle("-fx-background-color: whitesmoke; -fx-text-fill: white;");
@@ -151,9 +194,7 @@ public class Reader extends Application {
         Pane feedWindow = new StackPane();
         feedWindow.setStyle("-fx-background-color: tomato; -fx-text-fill: black;");
 
-        Text feedtext = new Text(
-
-        );
+        Text feedtext = new Text("TERE");
 
 
         // method that adds buttons and things alltogether to BorderPane
@@ -178,7 +219,6 @@ public class Reader extends Application {
         Label label = new Label("Juhised on siin ...");
         label.setAlignment(Pos.CENTER);
         label.setFont(new Font("Harlow Solid Italic", 20));//font
-       // label.setStyle("-fx-background-color: yellow; -fx-text-fill: black;");
         label.setStyle("-fx-text-fill: white;");
 
 
@@ -192,10 +232,10 @@ public class Reader extends Application {
                 "peamiselt veebilehtede sisukorra või uudiste kokkuvõtete tegemiseks. \n" +
                 "\n" +
                 "\n" +
-                "Viimasel ajal on RSSi üha rohkem hakatud kasutama ka meeskonnatöövahendites paljusid \n"+
+                "Viimasel ajal on RSSi üha rohkem hakatud kasutama ka meeskonnatöövahendites paljusid \n" +
                 "meeskonnaliikmeid puudutava info edastamiseks. Tavaliselt koostatakse uudisvoog \n" +
                 "(ingl.k RSS-feed) internetilehekülje või mõne muu seotud allika muutumisel automaatselt.\n" +
-                        "\n");
+                "\n");
 
 
         text.setFont(new Font("Arial", 10));//font
@@ -205,11 +245,16 @@ public class Reader extends Application {
 
         VBox vboxjuhis = new VBox();
         vboxjuhis.getChildren().addAll(label, text, button2);
-        vboxjuhis.setStyle("-fx-background-color: darkslateblue; -fx-text-fill: white;");
+        vboxjuhis.setStyle("-fx-background-color: #FF6600; -fx-text-fill: white;");
 
         scene2 = new Scene(vboxjuhis, 420, 300); //akna suurus
 
 
+        //Ikoon
+        //Image ikoon = new Image("file:fiiderlogo1.jpg");
+       // window.getIcons().add(new Image("resources/images/fiiderlogo1.jpg"));
+
+        window.getIcons().add(new Image(Reader.class.getResourceAsStream("fiiderlogo6.jpg")));
         //KUVAMINE
 
         //Display scene1 at first
@@ -217,5 +262,6 @@ public class Reader extends Application {
         window.setTitle("Fiider");
         window.show();
     }
+
 
 }
