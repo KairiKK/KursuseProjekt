@@ -1,0 +1,10 @@
+.root
+{
+ -fx-background-color: white;
+ -fx-font-family: "serif";
+ -fx-font-size: 24pt;
+}
+.border
+{
+-fx-border-width:20;
+}

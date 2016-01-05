@@ -1,5 +1,6 @@
 package GUI;
 
+import RSS_Connect.ConnectRSS;
 import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.application.Application;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +22,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 import javax.activation.URLDataSource;
+import javax.naming.spi.StateFactory;
 import javax.print.DocFlavor;
 import java.applet.Applet;
 import java.applet.AudioClip;
@@ -39,6 +41,8 @@ import static javafx.scene.paint.Color.*;
 public class Reader extends Application {
     Stage window;
     Scene scene1, scene2;
+    public Object url;
+    private TextArea selectedDescription;
 
 
     public static void main(String[] args) {
@@ -59,23 +63,69 @@ public class Reader extends Application {
 
         //Checkboxes - actions to add
         CheckBox chk1 = new CheckBox("Intro");
-        URL url = MyApp.class.getResource("Hail_And_Kill.wav");
-        AudioClip click = Applet.newAudioClip(url);
+        URL purr = MyApp.class.getResource("Hail_And_Kill.wav");
+        AudioClip click = Applet.newAudioClip(purr);
         chk1.setOnAction(event1 -> click.play());
 
+
+        // Sama saaks stagidega Stage'i vahetus stage1.close() stage2.show()
         CheckBox chk2 = new CheckBox("A");
+        chk2.setOnAction(event1 -> {
+            //scene1.getStylesheets().add("uus.css");
+            
+            scene1.getStylesheets().add(
+                    getClass().getResource("UusStyleSheet_Accessibility.css")
+                            .toExternalForm());
+        });
 
 
         // Button addNewfeed calls Dialogbox // Siit sai võetud malli: http://stackoverflow.com/questions/22166610/how-to-create-a-popup-windows-in-javafx
-
+        //ei oska sellega
         Button addNewFeed = new Button("+");
-        TextInputDialog testija = new TextInputDialog();
+        Stage testija = new Stage();
+        VBox vbox = new VBox();
+        Scene scene = new Scene(vbox);
+
+        Label headerText = new Label("Kas soovite sisestada aadressi? \n " +
+                                     "Sisestage lahtrisse aadress, mida soovite jälgima hakata ja vajutage OK");
+
+        TextField userInputField = new TextField();
+        userInputField.setPromptText("Sisesta aadress");
+
+        Button okButton = new Button("OK");
+        Button cancelButton = new Button("Cancel");
+        headerText.setGraphic(new ImageView(this.getClass().getResource("mybutton.jpg").toString()));
+        vbox.setPrefSize(450, 70);
+        vbox.setSpacing(2);
+
+        vbox.getChildren().addAll(headerText, userInputField, okButton, cancelButton);
+
+        testija.setTitle("Sisestus");
+        testija.setScene(scene);
+        testija.setResizable(false);
+        addNewFeed.setOnAction(event -> testija.showAndWait());
+
+
+        okButton.setOnAction(event -> {
+            userInputField.getText();
+            String inputUrl = new String(String.valueOf(userInputField));
+
+        });
+
+
+        cancelButton.setOnAction(event -> {
+            userInputField.setText("");
+
+        });
+
+       /* TextInputDialog testija = new TextInputDialog();
         testija.setTitle("Feedi Sisestus");
         testija.setHeaderText(" Kas soovite sisestada aadressi? \n " +
                 "Sisestage lahtrisse aadress, mida soovite jälgima hakata ja vajutage OK");
         testija.setGraphic(new ImageView(this.getClass().getResource("mybutton.jpg").toString()));
         testija.setResizable(false);
-        addNewFeed.setOnAction(event -> testija.showAndWait());
+        Button addNewFeed = new Button("+");
+        addNewFeed.setOnAction(event -> testija.showAndWait());*/
 
 
         //Dialogbox response
@@ -262,6 +312,18 @@ public class Reader extends Application {
         window.setTitle("Fiider");
         window.show();
     }
+
+
+
+    private void selectedDescription() {
+
+       TextArea selectedDescription = new TextArea();
+                selectedDescription.getChildrenUnmodifiable().addAll();
+
+        System.out.println(selectedDescription);
+
+    }
+
 
 
 }

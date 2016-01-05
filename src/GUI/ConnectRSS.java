@@ -20,20 +20,20 @@ public class ConnectRSS {
     public ArrayList titleString = new ArrayList();
     public ArrayList<ArrayList<String>> newsItem = new ArrayList<ArrayList<String>>();
 
+    public ConnectRSS(String inputUrl) {
 
-    public ConnectRSS(String testija) {
-
+        ArrayList<String> buffer = null;
         try {
-
-            Document doc = Jsoup.connect(testija).get(); // By the help of Jsoup.connect() method, we will connect with the URL.
+            Document doc;
+            doc = Jsoup.connect(inputUrl).get();
             item = doc.select("item");
-            System.out.println("[+] Connected to " + testija);
+            System.out.println("[+] Connected to " + inputUrl);
 
 
             for (Element element : item) {
 
 
-                ArrayList<String> buffer = new ArrayList<String>();
+                buffer = new ArrayList<String>();
                 title = element.select("title");
                 description = element.select("description");
                 link = element.select("link");
@@ -47,20 +47,19 @@ public class ConnectRSS {
         } catch (Exception e) {
             System.out.println("[-] Errooor");
         }
-
         System.out.println("JESSSS");
     }
 
 
-    public boolean testConnection(String testija) {
+    public boolean testConnection(String inputUrl) {
 
         try {
-            doc = Jsoup.connect(testija).get();
+            doc = Jsoup.connect(inputUrl).get();
         } catch (Exception e) {
-            System.out.println("Boooo " + testija + " failed.");
+            System.out.println("Boooo " + inputUrl + " failed.");
             return false;
         }
-        System.out.println("Wooop " + testija + " successful");
+        System.out.println("Wooop " + inputUrl + " successful");
         return true;
     }
 
@@ -68,9 +67,14 @@ public class ConnectRSS {
         return titleString;
 
     }
+
+    public ArrayList<ArrayList<String>> getNewsItem() {
+        return newsItem;
+    }
 }
 
-class testija {
+
+/*class url {
 
     String title;
     String description;
@@ -107,11 +111,14 @@ class testija {
 
     @Override
     public String toString() {
-        return "testija [title=" + title + ", description=" + description
+        return "url [title=" + title + ", description=" + description
                 + ", link=" + link + "]";
     }
 
 }
+
+*/
+
         /*
             Elements links = doc.select("link[type=application/rss+html+xml]");
 
