@@ -1,18 +1,12 @@
 package GUI;
 
-import RSS_Connect.ConnectRSS;
-import com.sun.org.apache.xpath.internal.SourceTree;
 import javafx.application.Application;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -21,29 +15,24 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import javax.activation.URLDataSource;
-import javax.naming.spi.StateFactory;
-import javax.print.DocFlavor;
+import javax.swing.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
-import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLStreamHandler;
-import java.util.Optional;
+import java.util.ArrayList;
 
-import static com.sun.org.apache.bcel.internal.util.SecuritySupport.getResourceAsStream;
-import static javafx.scene.paint.Color.*;
 
 /**
  * Created by Kairi on 18.12.2015.
+ *
+ * Main window.
  */
+
 public class Reader extends Application {
+
     Stage window;
     Scene scene1, scene2;
-    public Object url;
-    private TextArea selectedDescription;
-
+    ListView<String> ListView;
 
     public static void main(String[] args) {
         launch(args);
@@ -51,157 +40,76 @@ public class Reader extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         window = primaryStage;
+        window.setTitle("Fiider");
+        window.getIcons().add(new Image(Reader.class.getResourceAsStream("fiiderlogo6.jpg")));
 
+        BorderPane borderpane = new BorderPane();
 
-        //TOOLBAR on top
+        ArrayList newsItem = new ArrayList<>();
 
-        //Button 1
+        //Main window items
+
+        //Button 1 which takes to Guide and returns
         Button button1 = new Button("Juhis");
-        button1.setOnAction(e -> window.setScene(scene2));
 
 
         //Checkboxes - actions to add
         CheckBox chk1 = new CheckBox("Intro");
-        URL purr = MyApp.class.getResource("Hail_And_Kill.wav");
-        AudioClip click = Applet.newAudioClip(purr);
+        URL purr = Reader.class.getResource("Professional_Jazz_Guitar_Samples.wav"); //https://www.youtube.com/watch?v=tION5wkvsLo&index=2&list=PL04C8F6434A8E2F4F (00:00:18-00:00:21)
+        AudioClip click = Applet.newAudioClip(purr); //Praegu mängib Manowari ja jazzi. Siia tahaks panna voiceoveri tegelikult :D
         chk1.setOnAction(event1 -> click.play());
 
 
-        // Sama saaks stagidega Stage'i vahetus stage1.close() stage2.show()
+        // Checbox "A" changes window theme to Accessibility mode (larger font) //Sama saaks stagidega Stage'i vahetus stage1.close() stage2.show()
         CheckBox chk2 = new CheckBox("A");
         chk2.setOnAction(event1 -> {
-            //scene1.getStylesheets().add("uus.css");
-            
+
             scene1.getStylesheets().add(
                     getClass().getResource("UusStyleSheet_Accessibility.css")
                             .toExternalForm());
         });
 
+        // Scrollpane on the right side of the main window https://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/ScrollPane.html
 
-        // Button addNewfeed calls Dialogbox // Siit sai võetud malli: http://stackoverflow.com/questions/22166610/how-to-create-a-popup-windows-in-javafx
-        //ei oska sellega
+        Rectangle rect = new Rectangle(200, 5000);
+        rect.setStroke(Color.WHITE);
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(rect);
+        scroll.setFitToWidth(true);
+
+        ListView = new ListView<>();  // https://www.youtube.com/watch?v=GbzKr46VvD0
+        ListView.getItems().addAll("Fiid1", "Fiid2", "Fiid3");
+        ListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        //Colorpicker widget. Enables to change background color of the main window.
+
+        ColorPicker colorpicker = new ColorPicker();
+        Color c = colorpicker.getValue();
+        colorpicker.setOnAction(e ->
+                rect.setFill(colorpicker.getValue()));
+
+
+        // Button addNewfeed calls dialogbox, asks input.
+        // Used examples from following site: http://stackoverflow.com/questions/22166610/how-to-create-a-popup-windows-in-javafx
+
         Button addNewFeed = new Button("+");
-        Stage testija = new Stage();
-        VBox vbox = new VBox();
-        Scene scene = new Scene(vbox);
+        addNewFeed.setOnAction(event1 -> {
 
-        Label headerText = new Label("Kas soovite sisestada aadressi? \n " +
-                                     "Sisestage lahtrisse aadress, mida soovite jälgima hakata ja vajutage OK");
+            AddFeedInputbox.display("Kas oled kindel?","Nonoh");
 
-        TextField userInputField = new TextField();
-        userInputField.setPromptText("Sisesta aadress");
+        });
 
-        Button okButton = new Button("OK");
-        Button cancelButton = new Button("Cancel");
-        headerText.setGraphic(new ImageView(this.getClass().getResource("mybutton.jpg").toString()));
-        vbox.setPrefSize(450, 70);
-        vbox.setSpacing(2);
-
-        vbox.getChildren().addAll(headerText, userInputField, okButton, cancelButton);
-
-        testija.setTitle("Sisestus");
-        testija.setScene(scene);
-        testija.setResizable(false);
-        addNewFeed.setOnAction(event -> testija.showAndWait());
-
-
-        okButton.setOnAction(event -> {
-            userInputField.getText();
-            String inputUrl = new String(String.valueOf(userInputField));
+        //Button removeFeed removes inserted feed (name + address) from the list
+        Button removeFeed = new Button("Kustuta aadress");
+        removeFeed.setOnAction(event -> {
+            JOptionPane.showMessageDialog(null, "Kas olete kindel?"); //Message Dialog https://docs.oracle.com/javase/tutorial/uiswing/components/dialog.html;
 
         });
 
 
-        cancelButton.setOnAction(event -> {
-            userInputField.setText("");
 
-        });
-
-       /* TextInputDialog testija = new TextInputDialog();
-        testija.setTitle("Feedi Sisestus");
-        testija.setHeaderText(" Kas soovite sisestada aadressi? \n " +
-                "Sisestage lahtrisse aadress, mida soovite jälgima hakata ja vajutage OK");
-        testija.setGraphic(new ImageView(this.getClass().getResource("mybutton.jpg").toString()));
-        testija.setResizable(false);
-        Button addNewFeed = new Button("+");
-        addNewFeed.setOnAction(event -> testija.showAndWait());*/
-
-
-        //Dialogbox response
-        //Järgnev ei tööta
-
-      /*  ButtonType buttonTypeCancel(); = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        ButtonType buttonTypeOK = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-
-       // SEE NÄITAB ESIMESENA DIALOGBOXI ja prindib
-        Optional<String> result = isEmpty();
-        if (result.isPresent()){
-            System.out.println(result.get());
-        }
-        */
-        
-
-        
-        //meetod, et saada input - KÕIK NUPUD TULEKS ERALDI MEETODITEKS LÕHKUDA !!
-
-        /*
-        Optional<Object> result;
-       // testija.showAndWait().ifPresent(response -> {
-            if (result.isPresent() &&  response == ButtonType.OK) {
-                System.out.println("sisu: " + result.get());
-            }
-        });
-
-    Optional<TextInputDialog> result = testija.showAndWait();
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-        formatSystem();
-    }
-        /*String kasutajaInputUrl = testija.getResult();
-                System.out.println(kasutajaInputUrl); */
-
-
-     /* /if (result.isPresent()) {
-            System.out.println("Your name: " + result.get());
-        } else {
-            System.out.println("VIGA");
-        }*/
-
-
-
-        /*class Handler extends URLStreamHandler {
-            public ClassLoader classLoader;
-
-            public Handler() {
-                Optional<String> result = testija.showAndWait();
-                this.classLoader = getClass().getClassLoader();
-            }
-
-            @Override
-            protected URLConnection openConnection(URL u) throws IOException {
-                URL resourceUrl;
-                resourceUrl = classLoader.getResource(u.getPath());
-                if (resourceUrl == null)
-                    throw new IOException("Resource not found: " + u);
-
-                return resourceUrl.openConnection();
-            }
-        }
-
-        */
-        /*ButtonType buttonTypeOK = new ButtonType("OK");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        */
-
-
-        ComboBox chooseFeed = new ComboBox();
-
-        //Choicebox variant 1
-        /* ChoiceBox choosefeed = new ChoiceBox (FXCollections.observableArrayList(
-                "Kanal 1", "Kanal 2", "Kanal 3")); */
-
-        /*ChoiceBox <String>choosefeed = new ChoiceBox <>();
-        choosefeed.getItems().addAll();*/
 
         //Toolbar
         ToolBar toolBar1 = new ToolBar();
@@ -213,68 +121,52 @@ public class Reader extends Application {
                 chk1,
                 chk2,
                 new Separator(),
-                //choosefeed,
-                addNewFeed
-
+                colorpicker,
+                new Separator(),
+                new Separator(),
+                new Separator(),
+                addNewFeed,
+                removeFeed,
+                new Separator(),
+                new Separator()
         );
 
-      /*  choosefeed.getSelectionModel()
-                .selectedItemProperty()
-                .addListener(
-                        (ObservableValue observable, Object oldValue, Object newValue) -> {
-                            System.out.println(newValue); }); */
 
-        //toolBar1.setStyle(Color.CORAL));
-        /*toolBar1.setStyle("-fx-background-color: whitesmoke; -fx-text-fill: white;");
-        "-fx-background-color: whitesmoke; -fx-text-fill: white;");
-        //#001133   */
+        //Feedwindow in the center. Displays unpacked feed items - title of the feed, link and summary.
 
+        VBox feedWindow = new VBox();
+        feedWindow.setSpacing(5);
+        feedWindow.setStyle("-fx-background-color: black; -fx-text-fill: white;");
 
-        // SCROLLPANE ON THE RIGHT
+        Text titlearea = new Text();
+        Text descriptionarea = new Text();
+        Text linkarea = new Text();
 
-        Rectangle rect = new Rectangle(200, 400, Color.BISQUE);
-        rect.setStroke(Color.WHITE);
-        ScrollPane s1 = new ScrollPane();
-        s1.setPrefSize(120, 120);
-        s1.setContent(rect);
+        feedWindow.getChildren().addAll(titlearea, descriptionarea, linkarea);
 
 
-        //"FEEDWINDOW" CENTER, at least 3 different sections
-
-        Pane feedWindow = new StackPane();
-        feedWindow.setStyle("-fx-background-color: tomato; -fx-text-fill: black;");
-
-        Text feedtext = new Text("TERE");
-
-
-        // method that adds buttons and things alltogether to BorderPane
-        BorderPane borderpane = new BorderPane();
+        // Buttons and things alltogether to BorderPane
         borderpane.setTop(toolBar1);
-        borderpane.setRight(rect);
-        borderpane.setLeft(feedWindow);
+        borderpane.setRight(scroll);
+        borderpane.setCenter(feedWindow);
+        Scene scene1 = new Scene(borderpane, 800, 600);
+        borderpane.getChildren().addAll(ListView);
 
-        scene1 = new Scene(borderpane, 600, 400);
-
-
-        //SCENE 2
-
-        //Button 2
+        //Button 2. Takes from scene2 back to scene 1. https://www.youtube.com/watch?v=7LxWQIDOzyE
         Button button2 = new Button("Tagasi");
         button2.setAlignment(Pos.BASELINE_CENTER);
         button2.setStyle("-fx-background-color: yellow; -fx-text-fill: black;");
         button2.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         button2.setOnAction(e -> window.setScene(scene1));
 
-
-        Label label = new Label("Juhised on siin ...");
+        Label label = new Label("      Juhised on siin ...");
         label.setAlignment(Pos.CENTER);
         label.setFont(new Font("Harlow Solid Italic", 20));//font
         label.setStyle("-fx-text-fill: white;");
 
 
-        // tules teha ümber selliseks http://stackoverflow.com/questions/16828341/how-to-justify-text-for-a-character-array-in-java
         Text text = new Text(20, 100, " \n" +
-                " S I I A T U L E B P A L J U T E K S T I \n" +
+                " Mis on RSS? \n" +
                 "\n" +
                 "\n" +
                 "RSS (ingliskeelne lühend sõnadest Rich Site Summary või Really Simple Syndication) \n" +
@@ -285,45 +177,46 @@ public class Reader extends Application {
                 "Viimasel ajal on RSSi üha rohkem hakatud kasutama ka meeskonnatöövahendites paljusid \n" +
                 "meeskonnaliikmeid puudutava info edastamiseks. Tavaliselt koostatakse uudisvoog \n" +
                 "(ingl.k RSS-feed) internetilehekülje või mõne muu seotud allika muutumisel automaatselt.\n" +
-                "\n");
+                "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "Kuidas programmi kasutada? \n" +
+                "\n" +
+                "\n" +
+                "RSS lugeja käivitamiseks tuleb alustada soovitud aadressi lisamisega. Selleks vali menüüribalt \n" +
+                "nupp + ja sisesta aadress, mida soovid jälgima hakata. Aadress tuleb sisestada URL kujul. \n "+
+                "\n" +
+                "\n" +
+                "    Nüüd kuvatakse paremal uudislisti. Kikkides huvipakkuvale pealkirjale, kuvatakse valitud uudis peaaknas. \n" +
+                "  Üks uudis koosneb pealkirjast ja uudise lühikokkuvõttest. Lisaks kuvatakse valitud uudisele \n" +
+                "otselinki, mis annab võimaluse huvipakkuvat uudist kiirelt ja mugavalt üles leida ja lähemalt lugeda. \n" +
+                "RSS lugeja aitab hoida kokku väärtuslikku aega koondades ja kuvades erinevate kanalite uudisvood \n " +
+                "Sinu töölaual. \n" +
+                "\n" +
+                "\n" +
+
+                "");
 
 
-        text.setFont(new Font("Arial", 10));//font
-        text.setFill(WHITE);
+        //text.setFont(new Font("Arial", 10));
+        text.setStyle("-fx-font: 16 arial;");
+        text.setStyle("-fx-text-fill: white;");
         text.setTextAlignment(TextAlignment.CENTER);
 
-
         VBox vboxjuhis = new VBox();
-        vboxjuhis.getChildren().addAll(label, text, button2);
         vboxjuhis.setStyle("-fx-background-color: #FF6600; -fx-text-fill: white;");
+        vboxjuhis.getChildren().addAll(button2, label, text);
 
-        scene2 = new Scene(vboxjuhis, 420, 300); //akna suurus
-
-
-        //Ikoon
-        //Image ikoon = new Image("file:fiiderlogo1.jpg");
-       // window.getIcons().add(new Image("resources/images/fiiderlogo1.jpg"));
-
-        window.getIcons().add(new Image(Reader.class.getResourceAsStream("fiiderlogo6.jpg")));
-        //KUVAMINE
+        Scene scene2 = new Scene(vboxjuhis, 570, 600);
+        button1.setOnAction(e -> window.setScene(scene2));
 
         //Display scene1 at first
         window.setScene(scene1);
-        window.setTitle("Fiider");
         window.show();
-    }
 
-
-
-    private void selectedDescription() {
-
-       TextArea selectedDescription = new TextArea();
-                selectedDescription.getChildrenUnmodifiable().addAll();
-
-        System.out.println(selectedDescription);
 
     }
-
-
-
 }
+
+

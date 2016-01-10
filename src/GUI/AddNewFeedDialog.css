@@ -1,0 +1,31 @@
+.root {
+
+-fx-background-color:#708090;
+}
+
+.label{
+
+-fx-text-fill: #423232;
+
+}
+#labell {
+
+-fx-font-weight: bold;
+}
+
+.button{
+
+-fx-background-color:#A8CFDB;
+
+-fx-text-fill:#2E3132;
+-fx-font-weight: bold;
+
+-fx-background-radius: 4;
+
+}
+
+#button-ok {
+
+-fx-background-color:#E26464;
+
+}

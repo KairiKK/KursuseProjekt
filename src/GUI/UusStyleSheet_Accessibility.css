@@ -7,4 +7,13 @@
 .border
 {
 -fx-border-width:20;
+background-size: 80px 60px;
+}
+
+.borderpane{
+    -fx-text-fill: #006464;
+    -fx-background-color: #DFB951;
+    -fx-border-radius: 1000;
+    -fx-background-radius: 20;
+    -fx-padding: 5;
 }
